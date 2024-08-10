@@ -2,7 +2,7 @@ import { IEntityRepository } from "../../repositories/core/IEntityRepository";
 import { IEntity } from "../../shared/types/IEntity";
 import { IEntityDetails } from "../../shared/types/IEntityDetails";
 import { IRouteMeta } from "../../shared/types/IRouteMeta";
-import { attachSession } from "../../utils/attachSession";
+import { attachSession } from "./attachSession";
 import { Controller } from "./Controller";
 
 export abstract class EntityController<

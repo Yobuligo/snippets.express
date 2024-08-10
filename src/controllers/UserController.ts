@@ -1,4 +1,4 @@
-import { attachSession } from "../utils/attachSession";
+import { attachSession } from "./core/attachSession";
 import { Controller } from "./core/Controller";
 
 export class UserController extends Controller {
