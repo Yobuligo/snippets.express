@@ -1,10 +1,10 @@
-import { Request, Response } from "express";
+import { NextFunction, Request, Response } from "express";
 import { SessionRepo } from "../../repositories/SessionRepo";
 import { createError } from "../../shared/utils/createError";
 import { ISessionRequest } from "./types/ISessionRequest";
 
 export const attachSession = () => {
-  return async (req: Request, res: Response) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
     const sessionId = req.query.sessionId?.toString();
     if (!sessionId) {
       return res.status(401).send(createError("No session found"));
@@ -17,5 +17,6 @@ export const attachSession = () => {
     }
 
     (req as ISessionRequest).session = session;
+    next();
   };
 };
