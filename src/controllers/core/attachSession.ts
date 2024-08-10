@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import { SessionRepo } from "../../repositories/SessionRepo";
 import { createError } from "../../shared/utils/createError";
-import { ISessionRequest } from "../../types/ISessionRequest";
+import { ISessionRequest } from "./types/ISessionRequest";
 
 export const attachSession = () => {
   return async (req: Request, res: Response) => {
