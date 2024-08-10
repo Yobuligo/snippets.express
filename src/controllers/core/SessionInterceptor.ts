@@ -1,11 +1,17 @@
 import { NextFunction, Request, Response } from "express";
-import { SessionRepo } from "../../repositories/SessionRepo";
+import { SessionRepo } from "../../repositories/sessionRepo/SessionRepo";
 import { createError } from "../../shared/utils/createError";
 import { ISessionRequest } from "./types/ISessionRequest";
 
-export const attachSession = () => {
+export const SessionInterceptor = (
+  requestHandler: (
+    req: ISessionRequest,
+    res: Response,
+    next: NextFunction
+  ) => void
+) => {
   return async (req: Request, res: Response, next: NextFunction) => {
-    const sessionId = req.query.sessionId?.toString();
+    const sessionId = req.query.token?.toString();
     if (!sessionId) {
       return res.status(401).send(createError("No session found"));
     }
@@ -16,7 +22,8 @@ export const attachSession = () => {
       return res.status(401).send(createError("Invalid session"));
     }
 
-    (req as ISessionRequest).session = session;
-    next();
+    const sessionRequest = req as ISessionRequest;
+    sessionRequest.session = session;
+    requestHandler(sessionRequest, res, next);
   };
 };

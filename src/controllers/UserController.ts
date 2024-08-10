@@ -1,5 +1,5 @@
-import { attachSession } from "./core/attachSession";
 import { Controller } from "./core/Controller";
+import { SessionInterceptor } from "./core/SessionInterceptor";
 
 export class UserController extends Controller {
   constructor() {
@@ -16,6 +16,9 @@ export class UserController extends Controller {
   private logout() {}
 
   private register() {
-    this.router.get("", attachSession(), (req, res) => {});
+    this.router.get(
+      "",
+      SessionInterceptor((req, res) => {})
+    );
   }
 }

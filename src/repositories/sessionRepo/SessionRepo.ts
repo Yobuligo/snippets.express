@@ -1,5 +1,5 @@
-import { ISession } from "../shared/model/ISession";
-import { IEntityDetails } from "../shared/types/IEntityDetails";
+import { ISession } from "../../shared/model/ISession";
+import { IEntityDetails } from "../../shared/types/IEntityDetails";
 import { ISessionRepo } from "./ISessionRepo";
 
 export class SessionRepo implements ISessionRepo {
