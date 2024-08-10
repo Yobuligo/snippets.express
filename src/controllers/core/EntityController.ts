@@ -1,7 +1,8 @@
-import { IEntityRepository } from "../../repositories/IEntityRepository";
+import { IEntityRepository } from "../../repositories/core/IEntityRepository";
 import { IEntity } from "../../shared/types/IEntity";
 import { IEntityDetails } from "../../shared/types/IEntityDetails";
 import { IRouteMeta } from "../../shared/types/IRouteMeta";
+import { attachSession } from "../../utils/attachSession";
 import { Controller } from "./Controller";
 
 export abstract class EntityController<
@@ -19,8 +20,8 @@ export abstract class EntityController<
     this.update();
   }
 
-  private deleteById() {
-    this.router.delete(`${this.routeMeta}/:id`, (req, res) => {
+  protected deleteById() {
+    this.router.delete(`${this.routeMeta}/:id`, attachSession(), (req, res) => {
       const id = req.params.id;
       const success = this.repo.deleteById(id);
       if (!success) {
@@ -31,35 +32,39 @@ export abstract class EntityController<
     });
   }
 
-  private findAll() {
-    this.router.get(this.routeMeta.path, async (_, res) => {
+  protected findAll() {
+    this.router.get(this.routeMeta.path, attachSession(), async (_, res) => {
       const entities = await this.repo.findAll();
       res.status(200).send(entities);
     });
   }
 
-  private findById() {
-    this.router.get(`${this.routeMeta.path}/:id`, async (req, res) => {
-      const id = req.params.id;
-      const entity = await this.repo.findById(id);
-      if (entity) {
-        res.status(200).send(entity);
-      } else {
-        res.status(404).end();
+  protected findById() {
+    this.router.get(
+      `${this.routeMeta.path}/:id`,
+      attachSession(),
+      async (req, res) => {
+        const id = req.params.id;
+        const entity = await this.repo.findById(id);
+        if (entity) {
+          res.status(200).send(entity);
+        } else {
+          res.status(404).end();
+        }
       }
-    });
+    );
   }
 
-  private insert() {
-    this.router.post(this.routeMeta.path, async (req, res) => {
+  protected insert() {
+    this.router.post(this.routeMeta.path, attachSession(), async (req, res) => {
       const entity: IEntityDetails<TEntity> = req.body;
       const createdEntity = await this.repo.insert(entity);
       res.status(201).send(createdEntity);
     });
   }
 
-  private update() {
-    this.router.put(this.routeMeta.path, async (req, res) => {
+  protected update() {
+    this.router.put(this.routeMeta.path, attachSession(), async (req, res) => {
       const entity = req.body;
       const updatedEntity = await this.repo.update(entity);
       res.status(200).send(updatedEntity);
