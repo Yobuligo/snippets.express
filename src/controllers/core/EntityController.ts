@@ -1,15 +1,15 @@
-import { IEntityRepository } from "../repositories/IEntityRepository";
-import { IEntity } from "../shared/types/IEntity";
-import { IEntityDetails } from "../shared/types/IEntityDetails";
-import { IRouteMeta } from "../shared/types/IRouteMeta";
+import { IEntityRepository } from "../../repositories/IEntityRepository";
+import { IEntity } from "../../shared/types/IEntity";
+import { IEntityDetails } from "../../shared/types/IEntityDetails";
+import { IRouteMeta } from "../../shared/types/IRouteMeta";
 import { Controller } from "./Controller";
 
 export abstract class EntityController<
   TEntity extends IEntity
 > extends Controller {
   constructor(
-    private routeMeta: IRouteMeta,
-    private repo: IEntityRepository<TEntity>
+    protected routeMeta: IRouteMeta,
+    protected repo: IEntityRepository<TEntity>
   ) {
     super();
     this.deleteById();
