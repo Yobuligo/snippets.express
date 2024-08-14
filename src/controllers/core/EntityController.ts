@@ -6,11 +6,12 @@ import { Controller } from "./Controller";
 import { SessionInterceptor } from "./SessionInterceptor";
 
 export abstract class EntityController<
-  TEntity extends IEntity
+  TEntity extends IEntity,
+  TEntityRepository extends IEntityRepository<TEntity>
 > extends Controller {
   constructor(
     protected routeMeta: IRouteMeta,
-    protected repo: IEntityRepository<TEntity>
+    protected repo: TEntityRepository
   ) {
     super();
     this.deleteById();
