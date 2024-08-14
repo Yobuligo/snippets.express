@@ -7,4 +7,5 @@ export interface IEntityRepository<TEntity extends IEntity> {
   findById(id: string): Promise<TEntity | undefined>;
   insert(entity: IEntityDetails<TEntity>): Promise<TEntity>;
   update(entity: TEntity): Promise<TEntity>;
+  updateAll(entities: TEntity[]): Promise<TEntity[]>;
 }
