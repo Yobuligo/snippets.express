@@ -1,4 +1,4 @@
-import { IEntity } from "../types/IEntity";
+import { IEntity } from "../../core/api/types/IEntity";
 
 export interface ISession extends IEntity {
   expiresAt: Date;

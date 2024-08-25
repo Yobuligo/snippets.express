@@ -1,7 +1,7 @@
 import { IEntityRepository } from "../../repositories/core/IEntityRepository";
-import { IEntity } from "../../shared/types/IEntity";
-import { IEntityDetails } from "../../shared/types/IEntityDetails";
-import { IRouteMeta } from "../../shared/types/IRouteMeta";
+import { IEntity } from "../../core/api/types/IEntity";
+import { IEntityDetails } from "../../core/api/types/IEntityDetails";
+import { IRouteMeta } from "../../core/api/types/IRouteMeta";
 import { Controller } from "./Controller";
 import { SessionInterceptor } from "./SessionInterceptor";
 

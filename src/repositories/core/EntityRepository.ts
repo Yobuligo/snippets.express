@@ -1,6 +1,6 @@
 import { Subset } from "../../core/types/Subset";
-import { IEntity } from "../../shared/types/IEntity";
-import { IEntityDetails } from "../../shared/types/IEntityDetails";
+import { IEntity } from "../../core/api/types/IEntity";
+import { IEntityDetails } from "../../core/api/types/IEntityDetails";
 import { IEntityRepository } from "./IEntityRepository";
 
 export abstract class EntityRepository<T extends IEntity>
