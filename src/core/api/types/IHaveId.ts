@@ -1,5 +1,5 @@
 /**
- * This type represents an object which has an id.
+ * This type represents an object with an *{@link id}*.
  */
 export interface IHaveId {
   id: string;
