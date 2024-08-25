@@ -4,6 +4,7 @@ import { IEntitySubset } from "../../core/api/types/IEntitySubset";
 
 export interface IEntityRepository<TEntity extends IEntity> {
   deleteById(id: string): Promise<boolean>;
+  
   findAll<K extends keyof TEntity>(
     fields: K[]
   ): Promise<IEntitySubset<TEntity, K>[]>;
@@ -15,7 +16,21 @@ export interface IEntityRepository<TEntity extends IEntity> {
   ): Promise<IEntitySubset<TEntity, K> | undefined>;
   findById(id: string): Promise<TEntity | undefined>;
 
+  insert<K extends keyof TEntity>(
+    entity: IEntityDetails<TEntity>,
+    fields: K[]
+  ): Promise<IEntitySubset<TEntity, K>>;
   insert(entity: IEntityDetails<TEntity>): Promise<TEntity>;
+
+  update<K extends keyof TEntity>(
+    entity: TEntity,
+    fields: K[]
+  ): Promise<IEntitySubset<TEntity, K>>;
   update(entity: TEntity): Promise<TEntity>;
+
+  updateAll<K extends keyof TEntity>(
+    entities: TEntity[],
+    fields: K[]
+  ): Promise<IEntitySubset<TEntity, K>[]>;
   updateAll(entities: TEntity[]): Promise<TEntity[]>;
 }

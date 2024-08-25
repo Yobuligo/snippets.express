@@ -1,8 +1,7 @@
-import { Subset } from "../../core/types/Subset";
 import { IEntity } from "../../core/api/types/IEntity";
 import { IEntityDetails } from "../../core/api/types/IEntityDetails";
-import { IEntityRepository } from "./IEntityRepository";
 import { IEntitySubset } from "../../core/api/types/IEntitySubset";
+import { IEntityRepository } from "./IEntityRepository";
 
 export abstract class EntityRepository<T extends IEntity>
   implements IEntityRepository<T>
@@ -26,13 +25,28 @@ export abstract class EntityRepository<T extends IEntity>
     throw new Error();
   }
 
-  insert(entity: IEntityDetails<T>): Promise<T> {
+  insert<K extends keyof T>(
+    entity: IEntityDetails<T>,
+    fields: K[]
+  ): Promise<IEntitySubset<T, K>>;
+  insert(entity: IEntityDetails<T>): Promise<T>;
+  insert(entity: unknown, fields?: unknown): Promise<unknown> {
     throw new Error("Method not implemented.");
   }
-  update(entity: T): Promise<T> {
+  update<K extends keyof T>(
+    entity: T,
+    fields: K[]
+  ): Promise<IEntitySubset<T, K>>;
+  update(entity: T): Promise<T>;
+  update(entity: unknown, fields?: unknown): Promise<unknown> {
     throw new Error("Method not implemented.");
   }
-  updateAll(entities: T[]): Promise<T[]> {
+  updateAll<K extends keyof T>(
+    entities: T[],
+    fields: K[]
+  ): Promise<IEntitySubset<T, K>[]>;
+  updateAll(entities: T[]): Promise<T[]>;
+  updateAll(entities: unknown, fields?: unknown): Promise<unknown> {
     throw new Error("Method not implemented.");
   }
 }

@@ -69,7 +69,8 @@ export abstract class EntityController<
       this.routeMeta.path,
       SessionInterceptor(async (req, res) => {
         const entity: IEntityDetails<TEntity> = req.body;
-        const createdEntity = await this.repo.insert(entity);
+        const fields = this.getFieldsFromQuery(req.query);
+        const createdEntity = await this.repo.insert(entity, fields);
         res.status(201).send(createdEntity);
       })
     );
@@ -80,7 +81,8 @@ export abstract class EntityController<
       `${this.routeMeta.path}/:id`,
       SessionInterceptor(async (req, res) => {
         const entity: TEntity = req.body;
-        const updatedEntity = await this.repo.update(entity);
+        const fields = this.getFieldsFromQuery(req.query);
+        const updatedEntity = await this.repo.update(entity, fields);
         res.status(200).send(updatedEntity);
       })
     );
@@ -91,13 +93,17 @@ export abstract class EntityController<
       this.routeMeta.path,
       SessionInterceptor(async (req, res) => {
         const entities: TEntity[] = req.body;
-        const updatedEntities = await this.repo.updateAll(entities);
+        const fields = this.getFieldsFromQuery(req.query);
+        const updatedEntities = await this.repo.updateAll(entities, fields);
         res.status(200).send(updatedEntities);
       })
     );
   }
 
-  private getFieldsFromQuery(query: Query): (keyof TEntity)[] {
+  /**
+   * Returns the fields from the request *{@link query}* that are key fields of *{@link TEntity}*.
+   */
+  protected getFieldsFromQuery(query: Query): (keyof TEntity)[] {
     const fields = query.fields ? [String(query.fields).split(",")] : [];
     return fields as unknown as (keyof TEntity)[];
   }
