@@ -1,7 +1,8 @@
-import { IEntityRepository } from "../../repositories/core/IEntityRepository";
+import { Query } from "express-serve-static-core";
 import { IEntity } from "../../core/api/types/IEntity";
 import { IEntityDetails } from "../../core/api/types/IEntityDetails";
 import { IRouteMeta } from "../../core/api/types/IRouteMeta";
+import { IEntityRepository } from "../../repositories/core/IEntityRepository";
 import { Controller } from "./Controller";
 import { SessionInterceptor } from "./SessionInterceptor";
 
@@ -39,8 +40,9 @@ export abstract class EntityController<
   protected findAll() {
     this.router.get(
       this.routeMeta.path,
-      SessionInterceptor(async (_, res) => {
-        const entities = await this.repo.findAll();
+      SessionInterceptor(async (req, res) => {
+        const fields = this.getFieldsFromQuery(req.query);
+        const entities = await this.repo.findAll(fields);
         res.status(200).send(entities);
       })
     );
@@ -51,7 +53,8 @@ export abstract class EntityController<
       `${this.routeMeta.path}/:id`,
       SessionInterceptor(async (req, res) => {
         const id = req.params.id;
-        const entity = await this.repo.findById(id);
+        const fields = this.getFieldsFromQuery(req.query);
+        const entity = await this.repo.findById(id, fields);
         if (entity) {
           res.status(200).send(entity);
         } else {
@@ -92,5 +95,10 @@ export abstract class EntityController<
         res.status(200).send(updatedEntities);
       })
     );
+  }
+
+  private getFieldsFromQuery(query: Query): (keyof TEntity)[] {
+    const fields = query.fields ? [String(query.fields).split(",")] : [];
+    return fields as unknown as (keyof TEntity)[];
   }
 }
