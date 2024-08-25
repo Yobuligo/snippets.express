@@ -1,5 +1,4 @@
 import express from "express";
-import { UserController } from "./controllers/UserController";
 
 const server = express();
 server.use(express.json({ limit: "2mb" }));
