@@ -11,8 +11,8 @@ export abstract class EntityController<
   TEntityRepository extends IEntityRepository<TEntity>
 > extends Controller {
   constructor(
-    protected routeMeta: IRouteMeta,
-    protected repo: TEntityRepository
+    protected readonly routeMeta: IRouteMeta,
+    protected readonly repo: TEntityRepository
   ) {
     super();
     this.deleteById();

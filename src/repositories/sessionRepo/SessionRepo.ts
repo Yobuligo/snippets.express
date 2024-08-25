@@ -1,4 +1,4 @@
 import { ISession } from "../../shared/model/ISession";
-import { EntityRepository } from "../core/EntityRepository";
+import { SequelizeRepository } from "../sequelize/SequelizeRepository";
 
-export class SessionRepo extends EntityRepository<ISession> {}
+export class SessionRepo extends SequelizeRepository<ISession> {}
