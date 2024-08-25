@@ -11,15 +11,21 @@ export abstract class EntityRepository<T extends IEntity>
     throw new Error("Method not implemented.");
   }
 
-  findAll<K extends keyof T>(fields: K[]): Promise<IEntitySubset<T, K>>;
-  findAll<K extends keyof T>(fields?: K | undefined): Promise<T>;
+  findAll<K extends keyof T>(fields: K[]): Promise<IEntitySubset<T, K>[]>;
+  findAll(): Promise<T[]>;
   findAll(fields?: unknown): Promise<unknown> {
     throw new Error();
   }
 
-  findById(id: string): Promise<T | undefined> {
-    throw new Error("Method not implemented.");
+  findById<K extends keyof T>(
+    id: string,
+    fields: K[]
+  ): Promise<IEntitySubset<T, K> | undefined>;
+  findById(id: string): Promise<T | undefined>;
+  findById(id: unknown, fields?: unknown): Promise<unknown> {
+    throw new Error();
   }
+
   insert(entity: IEntityDetails<T>): Promise<T> {
     throw new Error("Method not implemented.");
   }
