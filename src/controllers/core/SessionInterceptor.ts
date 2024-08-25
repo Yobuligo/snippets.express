@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from "express";
 import { SessionRepo } from "../../repositories/sessionRepo/SessionRepo";
 import { InvalidSessionError } from "../../shared/errors/InvalidSessionError";
 import { NoSessionError } from "../../shared/errors/NoSessionError";
-import { createError } from "../../shared/utils/createError";
+import { createError } from "../../core/utils/createError";
 import { ISessionRequest } from "./types/ISessionRequest";
 
 export const SessionInterceptor = (
