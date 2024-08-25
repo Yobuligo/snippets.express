@@ -1,24 +1,26 @@
-import { NextFunction, Request, Response } from "express";
+import { NextFunction, Response } from "express";
 import { DateTime } from "../../core/services/date/DateTime";
 import { createError } from "../../core/utils/createError";
-import { SessionRepo } from "../../repositories/sessionRepo/SessionRepo";
-import { InvalidSessionError } from "../../shared/errors/InvalidSessionError";
-import { NoSessionError } from "../../shared/errors/NoSessionError";
+import { SessionRepo } from "../../repositories/SessionRepo";
+import { ErrorInterceptor } from "./ErrorInterceptor";
 import { ISessionRequest } from "./types/ISessionRequest";
 
+/**
+ * This interceptor is responsible for validating the users session before calling the *{@link requestHandler}*.
+ */
 export const SessionInterceptor = (
   requestHandler: (
     req: ISessionRequest,
     res: Response,
     next: NextFunction
-  ) => void
+  ) => any
 ) => {
-  return async (req: Request, res: Response, next: NextFunction) => {
+  return ErrorInterceptor(async (req, res, next) => {
     const sessionId = req.query.token?.toString();
     if (!sessionId) {
       return res
         .status(401)
-        .send(createError("No session found", NoSessionError.name));
+        .send(createError("No session found", "NoSessionError"));
     }
 
     const sessionRepo = new SessionRepo();
@@ -26,7 +28,7 @@ export const SessionInterceptor = (
     if (!session) {
       return res
         .status(401)
-        .send(createError("Invalid session", InvalidSessionError.name));
+        .send(createError("Invalid session", "InvalidSessionError"));
     }
 
     if (DateTime.isBefore(session.expiresAt)) {
@@ -37,6 +39,6 @@ export const SessionInterceptor = (
 
     const sessionRequest = req as ISessionRequest;
     sessionRequest.session = session;
-    requestHandler(sessionRequest, res, next);
-  };
+    await requestHandler(sessionRequest, res, next);
+  });
 };
