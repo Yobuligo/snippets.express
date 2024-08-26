@@ -12,7 +12,6 @@ export const Session: ModelStatic<Model<ISession, IEntityDetails<ISession>>> =
       defaultValue: DataTypes.UUIDV4,
     },
     expiresAt: DataTypes.DATE,
-    platform: DataTypes.STRING,
     userId: DataTypes.STRING,
     username: DataTypes.STRING,
   });
