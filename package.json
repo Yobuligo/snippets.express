@@ -13,8 +13,11 @@
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.21",
     "@types/sequelize": "^4.28.20",
+    "@types/uuid": "^10.0.0",
     "dotenv": "^16.4.5",
     "express": "^4.19.2",
-    "sequelize": "^6.37.3"
+    "hash.js": "^1.1.7",
+    "sequelize": "^6.37.3",
+    "uuid": "^10.0.0"
   }
 }
