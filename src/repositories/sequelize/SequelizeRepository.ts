@@ -31,6 +31,7 @@ export abstract class SequelizeRepository<TEntity extends IEntity>
   findById(id: unknown, fields?: unknown): Promise<unknown> {
     throw new Error("Method not implemented.");
   }
+
   insert<K extends keyof TEntity>(
     entity: IEntityDetails<TEntity>,
     fields: K[]
