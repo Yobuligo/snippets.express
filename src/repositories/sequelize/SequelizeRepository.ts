@@ -1,8 +1,8 @@
-import { Model, ModelStatic } from "sequelize";
+import { Model, ModelStatic, WhereOptions } from "sequelize";
 import { IEntity } from "../../core/api/types/IEntity";
 import { IEntityDetails } from "../../core/api/types/IEntityDetails";
-import { IEntitySubset } from "../../core/api/types/IEntitySubset";
 import { IEntityRepository } from "../../core/api/types/IEntityRepository";
+import { IEntitySubset } from "../../core/api/types/IEntitySubset";
 
 export abstract class SequelizeRepository<TEntity extends IEntity>
   implements IEntityRepository<TEntity>
@@ -13,23 +13,36 @@ export abstract class SequelizeRepository<TEntity extends IEntity>
     >
   ) {}
 
-  deleteById(id: string): Promise<boolean> {
-    throw new Error("Method not implemented.");
+  async delete(entity: TEntity): Promise<boolean> {
+    return await this.deleteById(entity.id);
   }
+
+  async deleteById(id: string): Promise<boolean> {
+    const count = await this.model.destroy({
+      where: { id: id } as WhereOptions<TEntity>,
+    });
+    return count === 1;
+  }
+
   findAll<K extends keyof TEntity>(
     fields: K[]
   ): Promise<IEntitySubset<TEntity, K>[]>;
   findAll(): Promise<TEntity[]>;
-  findAll(fields?: unknown): Promise<unknown> {
-    throw new Error("Method not implemented.");
+  async findAll(fields?: unknown): Promise<unknown> {
+    const requestedFields = this.getFields(fields);
+    const data = await this.model.findAll({ attributes: requestedFields });
+    return data.map((model) => model.toJSON());
   }
+
   findById<K extends keyof TEntity>(
     id: string,
     fields: K[]
   ): Promise<IEntitySubset<TEntity, K> | undefined>;
   findById(id: string): Promise<TEntity | undefined>;
-  findById(id: unknown, fields?: unknown): Promise<unknown> {
-    throw new Error("Method not implemented.");
+  async findById(id: string, fields?: unknown): Promise<unknown> {
+    const requestedFields = this.getFields(fields);
+    const data = await this.model.findByPk(id, { attributes: requestedFields });
+    return data?.toJSON();
   }
 
   insert<K extends keyof TEntity>(
@@ -40,6 +53,7 @@ export abstract class SequelizeRepository<TEntity extends IEntity>
   insert(entity: unknown, fields?: unknown): Promise<unknown> {
     throw new Error("Method not implemented.");
   }
+
   update<K extends keyof TEntity>(
     entity: TEntity,
     fields: K[]
@@ -48,6 +62,7 @@ export abstract class SequelizeRepository<TEntity extends IEntity>
   update(entity: unknown, fields?: unknown): Promise<unknown> {
     throw new Error("Method not implemented.");
   }
+
   updateAll<K extends keyof TEntity>(
     entities: TEntity[],
     fields: K[]
@@ -55,5 +70,12 @@ export abstract class SequelizeRepository<TEntity extends IEntity>
   updateAll(entities: TEntity[]): Promise<TEntity[]>;
   updateAll(entities: unknown, fields?: unknown): Promise<unknown> {
     throw new Error("Method not implemented.");
+  }
+
+  private getFields(fields?: unknown): string[] {
+    if (fields && Array.isArray(fields)) {
+      return fields;
+    }
+    return [];
   }
 }
