@@ -3,6 +3,7 @@ import { IEntity } from "../../core/api/types/IEntity";
 import { IEntityDetails } from "../../core/api/types/IEntityDetails";
 import { IEntityRepository } from "../../core/api/types/IEntityRepository";
 import { IEntitySubset } from "../../core/api/types/IEntitySubset";
+import { List } from "../../core/services/list/List";
 
 export abstract class SequelizeRepository<TEntity extends IEntity>
   implements IEntityRepository<TEntity>
@@ -50,8 +51,12 @@ export abstract class SequelizeRepository<TEntity extends IEntity>
     fields: K[]
   ): Promise<IEntitySubset<TEntity, K>>;
   insert(entity: IEntityDetails<TEntity>): Promise<TEntity>;
-  insert(entity: unknown, fields?: unknown): Promise<unknown> {
-    throw new Error("Method not implemented.");
+  async insert(
+    entity: IEntityDetails<TEntity>,
+    fields?: unknown
+  ): Promise<unknown> {
+    const data = await this.model.create(entity as any);
+    return this.toJson(data, fields);
   }
 
   update<K extends keyof TEntity>(
@@ -59,8 +64,11 @@ export abstract class SequelizeRepository<TEntity extends IEntity>
     fields: K[]
   ): Promise<IEntitySubset<TEntity, K>>;
   update(entity: TEntity): Promise<TEntity>;
-  update(entity: unknown, fields?: unknown): Promise<unknown> {
-    throw new Error("Method not implemented.");
+  async update(entity: TEntity, fields?: unknown): Promise<unknown> {
+    const entities = [entity];
+    const requestFields = this.getKeyFields(fields);
+    const updatedEntities = await this.updateAll(entities, requestFields);
+    return updatedEntities[0];
   }
 
   updateAll<K extends keyof TEntity>(
@@ -68,8 +76,28 @@ export abstract class SequelizeRepository<TEntity extends IEntity>
     fields: K[]
   ): Promise<IEntitySubset<TEntity, K>[]>;
   updateAll(entities: TEntity[]): Promise<TEntity[]>;
-  updateAll(entities: unknown, fields?: unknown): Promise<unknown> {
-    throw new Error("Method not implemented.");
+  async updateAll(entities: TEntity[], fields?: unknown): Promise<unknown> {
+    if (List.isEmpty(entities)) {
+      return [];
+    }
+
+    const entity = entities[0];
+    const propNames: (keyof TEntity)[] = [];
+    for (const propName in entity) {
+      if (
+        propName !== "id" &&
+        propName !== "createdAt" &&
+        propName !== "updatedAt"
+      ) {
+        propNames.push(propName);
+      }
+    }
+
+    const data = await this.model.bulkCreate(entities as any, {
+      updateOnDuplicate: propNames,
+    });
+
+    return data.map((model) => this.toJson(model, fields));
   }
 
   private getFields(fields?: unknown): string[] {
@@ -77,5 +105,26 @@ export abstract class SequelizeRepository<TEntity extends IEntity>
       return fields;
     }
     return [];
+  }
+
+  private getKeyFields(fields?: unknown): (keyof TEntity)[] {
+    return this.getFields(fields) as (keyof TEntity)[];
+  }
+
+  private toJson(
+    data: Model<TEntity, IEntityDetails<TEntity>>,
+    fields: unknown
+  ): TEntity {
+    const requestFields = this.getKeyFields(fields);
+    if (List.isNotEmpty(requestFields)) {
+      const entity = data.toJSON();
+      const newEntity = {} as TEntity;
+      requestFields.forEach((field) => {
+        newEntity[field] = entity[field];
+      });
+      return newEntity;
+    } else {
+      return data.toJSON();
+    }
   }
 }
