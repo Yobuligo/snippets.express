@@ -3,6 +3,8 @@ import { DecoratorStore } from "../DecoratorStore";
 
 const DemoDecorator = () => {};
 
+const DemoDecorator2 = () => {};
+
 class DemoClass {}
 
 describe("DecoratorStore", () => {
@@ -14,6 +16,13 @@ describe("DecoratorStore", () => {
     it("Returns undefined if decorator was not found", () => {
       DecoratorStore.set(DemoClass, () => {}, "demo");
       expect(DecoratorStore.get(DemoClass, DemoDecorator)).equal(undefined);
+    });
+
+    it("Returns correct decorator value if multiple were added", () => {
+      DecoratorStore.set(DemoClass, DemoDecorator, "demo");
+      DecoratorStore.set(DemoClass, DemoDecorator2, "demo2");
+      expect(DecoratorStore.get(DemoClass, DemoDecorator)).equal("demo");
+      expect(DecoratorStore.get(DemoClass, DemoDecorator2)).equal("demo2");
     });
   });
 
