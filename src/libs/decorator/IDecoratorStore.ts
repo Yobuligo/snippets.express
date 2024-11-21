@@ -2,7 +2,7 @@ import { Constructor } from "../../core/types/Constructor";
 import { Decorator } from "./types/Decorator";
 
 /**
- * An implementation of this interface is responsible for caching decorator with its value and returning it.
+ * An implementation of this interface is responsible for caching decorator values and returning them.
  */
 export interface IDecoratorStore {
   /**
