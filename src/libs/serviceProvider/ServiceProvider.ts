@@ -7,8 +7,21 @@ import { ServiceInstanceType } from "./types/ServiceInstanceType";
 import { ServiceType } from "./types/ServiceType";
 
 class ServiceProvider implements IServiceProvider {
+  private static instance: ServiceProvider;
   private definitions: Map<ServiceConstructor<any>, any> = new Map();
   private instances: Map<ServiceConstructor<any>, any> = new Map();
+
+  private constructor() {}
+
+  /**
+   * Creates the singleton instance of {@link ServiceProvider}.
+   */
+  static getInstance(): ServiceProvider {
+    if (!this.instance) {
+      this.instance = new ServiceProvider();
+    }
+    return this.instance;
+  }
 
   contains<T>(type: ServiceConstructor<T>): boolean {
     return this.definitions.get(type) !== undefined;
@@ -55,6 +68,6 @@ class ServiceProvider implements IServiceProvider {
 }
 
 /**
- * This constants keeps a singleton instance of the service provider.
+ * This constants refers to the singleton instance of {@link ServiceProvider}.
  */
-export const SP: IServiceProvider = new ServiceProvider();
+export const SP = ServiceProvider.getInstance();
