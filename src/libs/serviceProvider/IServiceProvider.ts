@@ -6,13 +6,13 @@ import { ServiceType } from "./types/ServiceType";
  */
 export interface IServiceProvider {
   /**
-   * Returns if a service of the given {@link type} was set by {@link put}.
+   * Returns if a service of the given {@link type} was set by {@link put} or created and cached by fetch.
    */
   contains<T>(type: ServiceConstructor<T>): boolean;
 
   /**
    * Returns a service instance of the given {@link type}.
-   * The service can be set via method {@link put}, otherwise an instance of {@link type} itself will be created and returned.
+   * The service can be set via method {@link put}, otherwise an instance of {@link type} itself will be created, cached and returned.
    */
   fetch<T>(type: ServiceConstructor<T>): ServiceType<T>;
 

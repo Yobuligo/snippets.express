@@ -24,7 +24,10 @@ class ServiceProvider implements IServiceProvider {
   }
 
   contains<T>(type: ServiceConstructor<T>): boolean {
-    return this.definitions.get(type) !== undefined;
+    return (
+      this.definitions.get(type) !== undefined ||
+      this.instances.get(type) !== undefined
+    );
   }
 
   fetch<T>(type: ServiceConstructor<T>): ServiceType<T> {
